@@ -8,9 +8,9 @@ Introduction to System V ABI calling convention in x86 GAS assembly language
 First, a stack is created:
 
 ```x86
-    pushq   %rbp
-    movq    %rsp, %rbp
-    subq    $16, %rsp
+pushq   %rbp
+movq    %rsp, %rbp
+subq    $16, %rsp
 ```
 
 at this point, `$16` is a very common literal. This must be an operating system requirement to either increment by at least 16 bytes, or have the stack aligned in units of 16 bytes. Note that the argument `arg` is passed through `%edi`, and it's value is saved onto the stack (as one of the first instructions):
