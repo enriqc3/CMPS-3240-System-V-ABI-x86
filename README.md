@@ -60,7 +60,7 @@ The function that is called, called the *callee*, does the following:
 1. Shadows the input arguments onto the stack (this may or may not happen according to the compiler or the calling convention)
 1. Completes its intended purpose
 1. Reverts the values of any registers that are deemed *saved*. Saved registers are defined by the calling convention, and should hold there value before and after a function call. It is up to the callee to revert any changes to saved registers. We may not need saved registers for this lab.
-1. Pop the stack with the `leave` instruction (in x86).
+1. Pop the stack. If this is `main()`, use `leave`, otherwise manually restore the stack and base pointers with addition commands.
 
 We will be most concerned with how arguments are passed back and forth between calls. The function in `example_arguments.s` has a function that takes 10 arguments. Only 6 registers are defined as argument registers, so the other 4 arguments must be placed onto the stack. Study the code, and the following table that explains where the arguments are located:
 
