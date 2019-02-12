@@ -18,7 +18,7 @@ Introduction to System V ABI calling convention in x86 GAS assembly language
 
 ### General
 
-* A recursive solution to Fibonacci (not recursive)
+* A recursive solution to Fibonacci (not iterative)
 
 ### Software
 
