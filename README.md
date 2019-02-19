@@ -72,10 +72,10 @@ We will be most concerned with how arguments are passed back and forth between c
 | Fourth | Register | `%ecx` |
 | Fifth | Register | `%r8d`<sup>*</sup> |
 | Sixth | Register | `%r9d`<sup>*</sup> |
-| Seventh | Register | `40(%rbp)` |
-| Eighth | Register | `32(%rbp)` |
-| Nineth | Register | `24(%rbp)` |
-| Tenth | Register | `16(%rbp)` |
+| Seventh | Stack | `40(%rbp)` |
+| Eighth | Stack | `32(%rbp)` |
+| Nineth | Stack | `24(%rbp)` |
+| Tenth | Stack | `16(%rbp)` |
 
 <sup>*</sup>See https://stackoverflow.com/questions/1753602/what-are-the-names-of-the-new-x86-64-processors-registers for an explanation of how the naming convention changes with registers r8-r15
 
@@ -106,7 +106,7 @@ cmpl    $1, -4(%rbp)
 jg  .L4
 ```
 
-This code compares the argument we shadowed into `-4(%rbp)`. *You could have also used `%edi` as the second argument at this point but the compiler either chose to or did not do this optimization.* `cmpl` carries out the comparison and `jg` jumps if it is greater. In this case, a jump is performed if the input argument is greater than `$1`. Thus, the fall-through block is the block that must `return 1`:
+This code compares the argument we shadowed into `-4(%rbp)`. *You could have also used `%edi` as the second argument at this point but the compiler did not do this optimization.* `cmpl` carries out the comparison and `jg` jumps if it is greater. In this case, a jump is performed if the input argument is greater than `$1`. Thus, the fall-through block is the block that must `return 1`:
 
 ```x86
 movl    $1, %eax
@@ -124,13 +124,7 @@ call    my_fact
 imull   -4(%rbp), %eax
 ```
 
-This block of code is a prime example of how the compiler does not optimize the code well:
-* The input argument is shadowed into `%eax`
-* `%eax` is decremented by 1
-* `%eax` is copied into the argument register `%edi`
-* Call to `my_fact`
-* Multiply `-4(%rbp)` (the argument) with `%eax` (result of call to `my_fact( arg - 1 )`)
-It would have been better to copy `-4(%rbp)` directly into `%edi` rather than waste an instruction on `%eax`.
+This code places the input argument into the inout register after decrementing it, makes a recursive call to itself, then carries out a multiplication. Note that this could have been done in fewer steps.
 
 The last few lines of code are:
 
@@ -150,8 +144,8 @@ Your task for this lab is to modify the code at the assembly level to calculate 
 * The makefile is missing the target to assemble something from a `.s` file, so borrow that from the appropriate lab
 * I recommend the following logic for the base cases:
 ```c
-if ( arg < 1 )
-   return 1;
+if ( arg <= 1 )
+   return n;
 else
    return fib( n - 1 ) + fib ( n - 2 );
 ```
